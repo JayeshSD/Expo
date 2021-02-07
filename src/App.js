@@ -4,7 +4,7 @@ import TitleBar from "./Components/TitleBar";
 
 const App = () => {
   return (
-    <div>
+    <div style={{ background: "#ecf0f1" }}>
       <TitleBar />
       <h4 style={{ textAlign: "center" }}>List of Users</h4>
       <ContactsContainer />
