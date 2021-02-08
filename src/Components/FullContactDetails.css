@@ -1,0 +1,17 @@
+h4,
+h3 {
+  margin: 5px;
+}
+p {
+  margin: 1px;
+}
+
+/* div {
+  margin: 15px;
+} */
+
+img {
+  height: 100px;
+  width: 100px;
+  border-radius: 50px;
+}
