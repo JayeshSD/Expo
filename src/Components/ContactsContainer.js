@@ -1,51 +1,29 @@
+import { connect } from "react-redux";
 import React, { Component } from "react";
 import Contact from "./Contact";
 import FullContactDetails from "./FullContactDetails";
-import API from "./utils/API";
+import { fetchUsers, showUser } from "../Redux/actions/userActions";
 
 class ContactsContainer extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      users: [],
-      loading: false,
-      numContacts: 100,
-      showUser: false,
-      userDetails: {},
-    };
     this.showUserDetails = this.showUserDetails.bind(this);
-    this.hideUserDetails = this.hideUserDetails.bind(this);
   }
-  async componentDidMount() {
-    this.setState({ loading: true });
-    let userData = await API.get("/", {
-      params: {
-        results: this.state.numContacts,
-      },
-    });
-    // console.log(userData.data.results);
-    this.setState({ users: [...userData.data.results], loading: false });
+  componentDidMount() {
+    this.props.fetchUsers();
   }
-
   showUserDetails(user) {
-    // console.log(user);
     this.setState({ userDetails: user });
-    this.setState({ showUser: true });
-    console.log(this.state.userDetails);
+    this.props.showUser(user);
   }
-  hideUserDetails() {
-    this.setState({ showUser: false });
-  }
-
   render() {
-    const { users, loading } = this.state;
-
+    const { users, loading, userDetails, showUserDetails } = this.props.users;
     if (loading) {
-      return <div>No users found</div>;
+      return <div>No Users Found!!!</div>;
     } else {
       let usersList = [];
       {
-        users.forEach((user, i) =>
+        users.forEach((user) =>
           usersList.push(
             <Contact
               handleClick={() => this.showUserDetails(user)}
@@ -53,24 +31,25 @@ class ContactsContainer extends Component {
               email={user.email}
               image={user.picture.large}
               key={`${user.name.first} ${user.name.last}`}
-              fullData={user}
             />
           )
         );
       }
-      let output = !this.state.showUser ? (
-        usersList
-      ) : (
-        <FullContactDetails handleClick={this.hideUserDetails} userDetails={this.state.userDetails} />
-      );
+      let output = !this.props.users.showUserDetails ? usersList : <FullContactDetails userDetails={userDetails} />;
+
       return (
         <div style={{ padding: "10px" }} className="ui list">
-          {!this.state.showUser ? <h4 style={{ textAlign: "center" }}>List of Users</h4> : null}
+          {!showUserDetails ? <h4 style={{ textAlign: "center" }}>List of Users</h4> : null}
           {output}
         </div>
       );
     }
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    users: state.userState,
+  };
+};
 
-export default ContactsContainer;
+export default connect(mapStateToProps, { fetchUsers, showUser })(ContactsContainer);

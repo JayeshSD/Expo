@@ -27,8 +27,6 @@ export class FullContactDetails extends Component {
           <p>Phone: {phone}</p>
           <p>Mobile: {cell}</p>
         </div>
-
-        <button onClick={this.props.handleClick}>Back</button>
       </div>
     );
   }
